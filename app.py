@@ -144,8 +144,9 @@ def chase_plan(monthly_demand, init_inventory, init_workers, prod_per_worker,
 # 선 그래프
 def draw_line_chart(plan_df, title):
     fig, ax = plt.subplots(figsize=(9, 4))
-    ax.plot(plan_df["월"], plan_df["수요"], marker="o", label="수요")
-    ax.plot(plan_df["월"], plan_df["총생산량"], marker="o", label="총생산량")
+    x_labels = [f"M{i+1}" for i in range(len(plan_df))]
+    ax.plot(x_labels, plan_df["수요"], marker="o", label="Demand")
+    ax.plot(x_labels, plan_df["총생산량"], marker="o", label="Production")
     ax.set_title(title)
     ax.legend()
     ax.grid(True, alpha=0.3)
@@ -155,8 +156,9 @@ def draw_line_chart(plan_df, title):
 # 재고/부족 그래프
 def draw_inventory_chart(plan_df, title):
     fig, ax = plt.subplots(figsize=(9, 4))
-    ax.bar(plan_df["월"], plan_df["기말재고"], label="재고")
-    ax.bar(plan_df["월"], plan_df["부족량"], label="부족")
+    x_labels = [f"M{i+1}" for i in range(len(plan_df))]
+    ax.bar(x_labels, plan_df["기말재고"], label="Inventory")
+    ax.bar(x_labels, plan_df["부족량"], label="Shortage")
     ax.set_title(title)
     ax.legend()
     st.pyplot(fig)
@@ -178,8 +180,8 @@ def draw_cost_chart(level_df, chase_df):
     ax.bar([i + width/2 for i in x], compare_df["Chase"], width=width, label="Chase")
 
     ax.set_xticks(list(x))
-    ax.set_xticklabels(compare_df["월"])
-    ax.set_title("월별 비용 비교")
+    ax.set_xticklabels([f"M{i+1}" for i in range(len(compare_df))])
+    ax.set_title("Monthly Cost Comparison")
     ax.legend()
     st.pyplot(fig)
 
@@ -244,8 +246,8 @@ c3.metric("총부족량", f"{df['부족량'].sum():,}")
 st.dataframe(df)
 
 # 그래프
-draw_line_chart(df, "수요 vs 생산")
-draw_inventory_chart(df, "재고와 부족")
+draw_line_chart(df, "Demand vs Production")
+draw_inventory_chart(df, "Inventory and Shortage")
 draw_cost_chart(level_df, chase_df)
 
 # 간단 설명
